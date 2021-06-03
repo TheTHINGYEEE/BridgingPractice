@@ -1,0 +1,14 @@
+name: BridgingPractice
+version: ${project.version}
+main: com.github.thethingyee.bridgingpractice.BridgingPractice
+
+commands:
+  bridge:
+    aliases:
+      - bridging
+      - b
+    usage: "/<command> <practice|leave|changecolor|restart>"
+    description: "The main command for the BridgingPractice Plugin."
+
+depend:
+  - WorldEdit

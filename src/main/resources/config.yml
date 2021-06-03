@@ -1,0 +1,17 @@
+defaults:
+  # Plugin defaults
+  world: "world"
+  # Name of schematic file along with the extension, make sure it is on BridgingPractice/schematics
+  schematic: "islandFinal2.schematic"
+  # Y coordinate of the kill zone / restart.
+  kill-zone: 110
+offset:
+  # Position player to the spawn of the schematic.
+  default:
+    x: -8.5
+    y: 3.0
+    z: -7.56
+    rotation: 0
+scoreboard:
+  server-ip: "thingyservers.xyz"
+
