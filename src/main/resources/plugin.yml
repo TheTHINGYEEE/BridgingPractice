@@ -7,6 +7,11 @@ commands:
     aliases:
       - bridging
       - b
+      - iamasweatybridger
+      - deeznuts
+      - suckingass
+      - gay
+      - urmom
     usage: "/<command> <practice|leave|changecolor|restart>"
     description: "The main command for the BridgingPractice Plugin."
 

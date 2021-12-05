@@ -62,7 +62,7 @@ public class Commands implements CommandExecutor {
 
                             bridgingPractice.getWorldArray().add(player.getUniqueId().toString().replaceAll("-", ""));
 
-                            String schematicName = (args.length == 2) ? args[1] : "default";
+                            String schematicName = (args.length == 2) ? args[1] : file.getName().replaceAll(".schematic", "");
 
                             File prev = file;
                             file = customSchematicFound ? prev : new File(bridgingPractice.getDataFolder() + File.separator + "/schematics/" + bridgingPractice.getConfig().getString("defaults.schematic"));

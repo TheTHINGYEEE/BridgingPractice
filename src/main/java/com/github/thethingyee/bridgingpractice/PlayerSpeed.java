@@ -21,7 +21,9 @@ public class PlayerSpeed {
             Location oldLoc = player.getLocation();
             @Override
             public void run() {
+                oldLoc.setY(0.0);
                 Location newLoc = player.getLocation();
+                newLoc.setY(0.0);
                 double equation = newLoc.distance(oldLoc) * 2;
                 hMaps.getPlayerSpeed().put(player, equation);
                 oldLoc = newLoc;

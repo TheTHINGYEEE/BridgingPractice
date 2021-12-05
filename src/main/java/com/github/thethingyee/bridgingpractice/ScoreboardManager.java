@@ -31,6 +31,8 @@ public class ScoreboardManager {
                             "",
                             "Name: " + ChatColor.GREEN + player.getName(),
                             "",
+                            "Map: " + ChatColor.GREEN + hMaps.getPlayerSchematic().get(player),
+                            "",
                             "Blocks Placed: " + ChatColor.GREEN + hMaps.getBlocksPlaced().get(player),
                             "Speed: " + ChatColor.GREEN + String.format("%.2f", hMaps.getPlayerSpeed().get(player)) + " m/s",
                             "",
@@ -55,6 +57,8 @@ public class ScoreboardManager {
                         fastBoard.updateLines(
                                 "",
                                 "Name: " + ChatColor.GREEN + target.getName(),
+                                "",
+                                "Map: " + ChatColor.GREEN + hMaps.getPlayerSchematic().get(target),
                                 "",
                                 "Blocks Placed: " + ChatColor.GREEN + hMaps.getBlocksPlaced().get(target),
                                 "Speed: " + ChatColor.GREEN + String.format("%.2f", hMaps.getPlayerSpeed().get(target)) + " m/s",
