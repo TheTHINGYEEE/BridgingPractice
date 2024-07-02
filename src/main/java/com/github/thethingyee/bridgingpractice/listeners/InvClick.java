@@ -20,9 +20,9 @@ public class InvClick implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         HMaps hMaps = bridgingPractice.gethMaps();
-        if(e.getClickedInventory() == null) return;
+        if(e.getInventory() == null) return;
         if(e.getCurrentItem().getItemMeta() != null) {
-            if (e.getClickedInventory().getName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Select Color")) {
+            if (e.getInventory().getName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Select Color")) {
                 e.setCancelled(true);
                 if (e.getWhoClicked() instanceof Player) {
                     Player player = (Player) e.getWhoClicked();

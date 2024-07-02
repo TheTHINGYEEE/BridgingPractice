@@ -1,7 +1,7 @@
 package com.github.thethingyee.bridgingpractice;
 
-import com.github.thethingyee.bridgingpractice.libraries.FastBoard;
 import com.github.thethingyee.bridgingpractice.utils.HMaps;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

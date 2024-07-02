@@ -29,7 +29,6 @@ public class PlayerSpeed {
                 oldLoc = newLoc;
             }
         };
-        if(player == null) Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "NULL WTFFFF");
         if(hMaps.getPlayerRunnable().containsKey(player)) return;
         hMaps.getPlayerRunnable().put(player, runnable);
         hMaps.getPlayerRunnable().get(player).runTaskTimer(bridgingPractice, 0, 10);

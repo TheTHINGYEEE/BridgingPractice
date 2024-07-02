@@ -30,7 +30,7 @@ public class GUIManager {
 
     public void giveInventoryItems(Player player, int color, int changeitemcolor) {
 
-        player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0F, 1.0F);
 
         ArrayList<ItemStack> stacks = new ArrayList<>(Arrays.asList(player.getInventory().getContents()));
         if(!stacks.isEmpty()) {

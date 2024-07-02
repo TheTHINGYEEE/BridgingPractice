@@ -53,6 +53,8 @@ public class Commands implements CommandExecutor {
                                 player.sendMessage(bridgingPractice.prefix + msg);
                             }
 
+                            if(file == null) return true;
+
                             wc.type(WorldType.FLAT);
                             wc.generatorSettings("2;0;1;");
 
@@ -71,7 +73,7 @@ public class Commands implements CommandExecutor {
                             try {
                                 bridgingPractice.loadSchem(file, loc, Offsets.getRotation(schematicName));
                             } catch (IOException | DataException | MaxChangedBlocksException e) {
-                                e.printStackTrace();
+                                Bukkit.getConsoleSender().sendMessage("Exception found! " + e.getMessage());
                             }
 
                             player.setGameMode(GameMode.SURVIVAL);
@@ -128,7 +130,8 @@ public class Commands implements CommandExecutor {
                                     try {
                                         FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.separator + "/" + worldName));
                                     } catch (IOException ex) {
-                                        ex.printStackTrace();
+                                        Bukkit.getConsoleSender().sendMessage("Exception found! " + ex.getMessage());
+
                                     }
                                     Bukkit.getConsoleSender().sendMessage("Deleted world '" + worldName + "'");
                                     hMaps.getAssignedWorld().remove(player);

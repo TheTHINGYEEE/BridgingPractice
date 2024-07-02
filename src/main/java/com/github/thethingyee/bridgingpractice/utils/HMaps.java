@@ -1,6 +1,6 @@
 package com.github.thethingyee.bridgingpractice.utils;
 
-import com.github.thethingyee.bridgingpractice.libraries.FastBoard;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
