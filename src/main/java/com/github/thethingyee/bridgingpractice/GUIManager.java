@@ -6,14 +6,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Dye;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GUIManager {
-
-    private final BridgingPractice bridgingPractice;
 
     private ItemMeta changeColMeta;
     private ItemMeta restartMeta;
@@ -21,10 +18,6 @@ public class GUIManager {
     private ItemMeta leaveMeta;
 
     private ItemMeta spectatorLeave;
-
-    public GUIManager(BridgingPractice bridgingPractice) {
-        this.bridgingPractice = bridgingPractice;
-    }
 
     public void giveInventoryItems(Player player, DyeColor color) {
 
@@ -35,10 +28,10 @@ public class GUIManager {
             player.getInventory().clear();
         }
 
-        ItemStack wool = new ItemStack(Material.WOOL, 64, color.getWoolData());
+        ItemStack wool = new ItemStack(Material.WOOL, 64, color.getData()); // idc deprecate my ass
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack refill = new ItemStack(Material.CHEST);
-        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, color.getData()); // deprecated my ass
+        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, color.getData());
         ItemStack restart = new ItemStack(Material.STICK);
         ItemStack leave = new ItemStack(Material.REDSTONE_BLOCK);
 

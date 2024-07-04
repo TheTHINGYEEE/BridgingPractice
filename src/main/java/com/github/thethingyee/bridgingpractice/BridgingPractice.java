@@ -1,5 +1,6 @@
 package com.github.thethingyee.bridgingpractice;
 
+import com.github.thethingyee.bridgingpractice.commands.manager.CommandManager;
 import com.github.thethingyee.bridgingpractice.listeners.*;
 import com.github.thethingyee.bridgingpractice.utils.ConfigExists;
 import com.github.thethingyee.bridgingpractice.utils.Offsets;
@@ -40,7 +41,7 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
     public void onEnable() {
         Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Enabling BridgingPractice plugin..");
 
-        guiManager = new GUIManager(this);
+        guiManager = new GUIManager();
         scoreboardManager = new ScoreboardManager(this);
 
         new Offsets(this);
@@ -63,7 +64,7 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
         this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
 
-        this.getCommand("bridge").setExecutor(new Commands(this));
+        this.getCommand("bridge").setExecutor(new CommandManager(this));
 
         saveDefaultConfig();
         if (Bukkit.getWorld(this.getConfig().getString("defaults.world")) == null) {

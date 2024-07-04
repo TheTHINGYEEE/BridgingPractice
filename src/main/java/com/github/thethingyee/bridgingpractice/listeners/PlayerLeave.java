@@ -4,6 +4,7 @@ import com.github.thethingyee.bridgingpractice.BridgingPractice;
 import com.github.thethingyee.bridgingpractice.utils.Session;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +40,7 @@ public class PlayerLeave implements Listener {
             if(world != null) {
                 if(!world.getPlayers().isEmpty()) {
                     for(Player player : world.getPlayers()) {
-                        if(bridgingPractice.getActiveSessions().get(player) == e.getPlayer()) {
+                        if(bridgingPractice.getActiveSessions().get(player).getSpectating() == e.getPlayer()) {
                             bridgingPractice.getActiveSessions().get(player).getScoreboard().delete();
                             bridgingPractice.getActiveSessions().get(player).setScoreboard(null);
                             bridgingPractice.getActiveSessions().get(player).setSpectating(null);
@@ -55,7 +56,7 @@ public class PlayerLeave implements Listener {
                 try {
                     FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.separator + "/" + worldName));
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + ChatColor.RED + ex.getMessage());
                 }
                 Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + "Deleted world '" + worldName + "'");
                 bridgingPractice.getPlayerSpeed().stopPlayerSpeed(e.getPlayer());

@@ -1,7 +1,6 @@
 package com.github.thethingyee.bridgingpractice.utils;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
