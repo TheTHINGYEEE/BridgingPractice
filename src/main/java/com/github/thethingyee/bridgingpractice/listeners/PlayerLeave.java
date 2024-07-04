@@ -1,7 +1,7 @@
 package com.github.thethingyee.bridgingpractice.listeners;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
+import com.github.thethingyee.bridgingpractice.utils.Session;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -13,6 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.io.File;
 import java.io.IOException;
 
+// i hate you so much old thingy i have to replace all hmap garbage because of your bs i havent even tested the plugin yet if it even works before i did all this
+// and now i have to make a schematic bruhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh fuck you
+// i have been refactoring for 1 and a half hours fuck
 public class PlayerLeave implements Listener {
 
     private final BridgingPractice bridgingPractice;
@@ -23,19 +26,23 @@ public class PlayerLeave implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
-        HMaps hMaps = bridgingPractice.gethMaps();
+
         Player p = e.getPlayer();
-        if(hMaps.getAssignedWorld().containsKey(p)) {
+        if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
+
+        Session currentSession = bridgingPractice.getActiveSessions().get(e.getPlayer());
+
+        if(currentSession.getAssignedWorld() != null) {
             p.teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
             String worldName = p.getUniqueId().toString().replaceAll("-", "");
             World world = Bukkit.getWorld(worldName);
             if(world != null) {
                 if(!world.getPlayers().isEmpty()) {
                     for(Player player : world.getPlayers()) {
-                        if(hMaps.getSpectatingPlayer().get(player) == e.getPlayer()) {
-                            hMaps.getPlayerScoreboard().get(player).delete();
-                            hMaps.getPlayerScoreboard().remove(player);
-                            hMaps.getSpectatingPlayer().remove(player);
+                        if(bridgingPractice.getActiveSessions().get(player) == e.getPlayer()) {
+                            bridgingPractice.getActiveSessions().get(player).getScoreboard().delete();
+                            bridgingPractice.getActiveSessions().get(player).setScoreboard(null);
+                            bridgingPractice.getActiveSessions().get(player).setSpectating(null);
                             player.setAllowFlight(false);
                             player.setFlying(false);
                             player.getInventory().clear();
@@ -52,10 +59,10 @@ public class PlayerLeave implements Listener {
                 }
                 Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + "Deleted world '" + worldName + "'");
                 bridgingPractice.getPlayerSpeed().stopPlayerSpeed(e.getPlayer());
-                hMaps.getSelectedWoolColor().remove(e.getPlayer());
-                hMaps.getAssignedWorld().remove(p);
+                currentSession.setWoolColor(null);
+                currentSession.setAssignedWorld(null);
                 bridgingPractice.getWorldArray().remove(worldName);
-                hMaps.getPlayerSchematic().remove(p);
+                currentSession.setSchematicName(null);
             }
         }
         p.getInventory().clear();

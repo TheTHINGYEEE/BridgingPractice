@@ -1,6 +1,6 @@
 package com.github.thethingyee.bridgingpractice;
 
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
+import com.github.thethingyee.bridgingpractice.utils.Session;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,25 +16,28 @@ public class ScoreboardManager {
     }
 
     public void init() {
-        HMaps hMaps = bridgingPractice.gethMaps();
+
+
+
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                for(Player player : hMaps.getPlayerScoreboard().keySet()) {
-                    if(hMaps.getSpectatingPlayer().containsKey(player)) {
+                for(Player player : bridgingPractice.getActiveSessions().keySet()) {
+                    Session session = bridgingPractice.getActiveSessions().get(player);
+                    if(session.getSpectating() != null || session.getScoreboard() == null) {
                         continue;
                     }
-                    FastBoard fastBoard = hMaps.getPlayerScoreboard().get(player);
+                    FastBoard fastBoard = session.getScoreboard();
                     fastBoard.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bridging");
 
                     fastBoard.updateLines(
                             "",
                             "Name: " + ChatColor.GREEN + player.getName(),
                             "",
-                            "Map: " + ChatColor.GREEN + hMaps.getPlayerSchematic().get(player),
+                            "Map: " + ChatColor.GREEN + session.getSchematicName(),
                             "",
-                            "Blocks Placed: " + ChatColor.GREEN + hMaps.getBlocksPlaced().get(player),
-                            "Speed: " + ChatColor.GREEN + String.format("%.2f", hMaps.getPlayerSpeed().get(player)) + " m/s",
+                            "Blocks Placed: " + ChatColor.GREEN + session.getBlocksPlaced(),
+                            "Speed: " + ChatColor.GREEN + String.format("%.2f", session.getSpeed()) + " m/s",
                             "",
                             "Online Players: " + ChatColor.GREEN + Bukkit.getOnlinePlayers().size(),
                             "",
@@ -48,20 +51,21 @@ public class ScoreboardManager {
         BukkitRunnable runnable2 = new BukkitRunnable() {
             @Override
             public void run() {
-                for(Player p : hMaps.getSpectatingPlayer().keySet()) {
-                    if(hMaps.getSpectatingPlayer().get(p) != null) {
-                        Player target = hMaps.getSpectatingPlayer().get(p);
-                        FastBoard fastBoard = hMaps.getPlayerScoreboard().get(p);
+                for(Player p : bridgingPractice.getActiveSessions().keySet()) {
+                    if(bridgingPractice.getActiveSessions().get(p).isSpectatingPlayer()) {
+                        Player target = bridgingPractice.getActiveSessions().get(p).getSpectating();
+                        Session session = bridgingPractice.getActiveSessions().get(target);
+                        FastBoard fastBoard = bridgingPractice.getActiveSessions().get(p).getScoreboard();
                         fastBoard.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bridging");
 
                         fastBoard.updateLines(
                                 "",
                                 "Name: " + ChatColor.GREEN + target.getName(),
                                 "",
-                                "Map: " + ChatColor.GREEN + hMaps.getPlayerSchematic().get(target),
+                                "Map: " + ChatColor.GREEN + session.getSchematicName(),
                                 "",
-                                "Blocks Placed: " + ChatColor.GREEN + hMaps.getBlocksPlaced().get(target),
-                                "Speed: " + ChatColor.GREEN + String.format("%.2f", hMaps.getPlayerSpeed().get(target)) + " m/s",
+                                "Blocks Placed: " + ChatColor.GREEN + session.getBlocksPlaced(),
+                                "Speed: " + ChatColor.GREEN + String.format("%.2f", session.getSpeed()) + " m/s",
                                 "",
                                 "Online Players: " + ChatColor.GREEN + Bukkit.getOnlinePlayers().size(),
                                 "",
@@ -75,13 +79,11 @@ public class ScoreboardManager {
     }
 
     public void showPlayingScoreboard(Player player) {
-        HMaps hMaps = bridgingPractice.gethMaps();
-        hMaps.getPlayerScoreboard().put(player, new FastBoard(player));
+        bridgingPractice.getActiveSessions().get(player).setScoreboard(new FastBoard(player));
     }
 
     public void showSpectateScoreboard(Player request, Player target) {
-        HMaps hMaps = bridgingPractice.gethMaps();
-        hMaps.getPlayerScoreboard().put(request, new FastBoard(request));
-        hMaps.getSpectatingPlayer().put(request, target);
+        bridgingPractice.getActiveSessions().get(request).setScoreboard(new FastBoard(request));
+        bridgingPractice.getActiveSessions().get(request).setSpectating(target);
     }
 }

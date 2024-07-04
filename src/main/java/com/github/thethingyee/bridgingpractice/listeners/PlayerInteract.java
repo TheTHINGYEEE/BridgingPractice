@@ -2,9 +2,8 @@ package com.github.thethingyee.bridgingpractice.listeners;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
 import com.github.thethingyee.bridgingpractice.GUIManager;
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
 import com.github.thethingyee.bridgingpractice.utils.Offsets;
-import com.github.thethingyee.bridgingpractice.utils.WoolColor;
+import com.github.thethingyee.bridgingpractice.utils.Session;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -25,8 +24,9 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        HMaps hMaps = bridgingPractice.gethMaps();
         GUIManager guiManager = bridgingPractice.getGuiManager();
+        if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
+        Session currentSession = bridgingPractice.getActiveSessions().get(e.getPlayer());
         if (e.getPlayer().getWorld().getName().equalsIgnoreCase(e.getPlayer().getUniqueId().toString().replaceAll("-", ""))) {
             if(e.getPlayer().getItemInHand().getItemMeta() == null) return;
             if (e.getPlayer().getItemInHand().getItemMeta().equals(guiManager.getChangeColMeta())) {
@@ -34,29 +34,29 @@ public class PlayerInteract implements Listener {
                 e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "You have opened the Change Color GUI.");
             } else if (e.getPlayer().getItemInHand().getItemMeta().equals(guiManager.getRestartMeta())) {
                 if (e.getPlayer().getWorld().getName().equalsIgnoreCase(e.getPlayer().getUniqueId().toString().replaceAll("-", ""))) {
-
-                    e.getPlayer().teleport(new Location(Bukkit.getWorld(e.getPlayer().getUniqueId().toString().replaceAll("-", "")), 0.0, 128.0, 0.0).add(Offsets.getOffsets(hMaps.getPlayerSchematic().get(e.getPlayer()))[0], Offsets.getOffsets(hMaps.getPlayerSchematic().get(e.getPlayer()))[1]+1, Offsets.getOffsets(hMaps.getPlayerSchematic().get(e.getPlayer()))[2]));
-                    if (hMaps.getBlockPlaced().containsKey(e.getPlayer())) {
-                        for (Location loc : hMaps.getBlockPlaced().get(e.getPlayer())) {
+                    double[] offset = Offsets.getOffsets(currentSession.getSchematicName());
+                    e.getPlayer().teleport(new Location(Bukkit.getWorld(e.getPlayer().getUniqueId().toString().replaceAll("-", "")), 0.0, 128.0, 0.0).add(offset[0], offset[1]+1, offset[2]));
+                    if (currentSession.getBlockPlaced() != null) {
+                        for (Location loc : currentSession.getBlockPlaced()) {
                             e.getPlayer().getWorld().getBlockAt(loc).setType(Material.AIR);
                         }
                     }
-                    hMaps.getBlocksPlaced().put(e.getPlayer(), 0);
+                    currentSession.setBlocksPlaced(0);
                     e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "Successfully restarted world.");
 
                 }
             } else if (e.getPlayer().getItemInHand().getItemMeta().equals(guiManager.getLeaveMeta())) {
-                if (hMaps.getAssignedWorld().containsKey(e.getPlayer())) {
+                if (currentSession.getAssignedWorld() != null) {
                     e.getPlayer().teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
                     String worldName = e.getPlayer().getUniqueId().toString().replaceAll("-", "");
                     World world = Bukkit.getWorld(worldName);
                     if (world != null) {
                         if(!world.getPlayers().isEmpty()) {
                             for(Player player : world.getPlayers()) {
-                                if(hMaps.getSpectatingPlayer().get(player) == e.getPlayer()) {
-                                    hMaps.getPlayerScoreboard().get(player).delete();
-                                    hMaps.getPlayerScoreboard().remove(player);
-                                    hMaps.getSpectatingPlayer().remove(player);
+                                if(bridgingPractice.getActiveSessions().get(player).getSpectating() == e.getPlayer()) {
+                                    currentSession.getScoreboard().delete();
+                                    currentSession.setScoreboard(null);
+                                    currentSession.setSpectating(null);
                                     player.setAllowFlight(false);
                                     player.setFlying(false);
                                     player.getInventory().clear();
@@ -72,24 +72,25 @@ public class PlayerInteract implements Listener {
                             ex.printStackTrace();
                         }
                         Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + "Deleted world '" + worldName + "'");
-                        hMaps.getAssignedWorld().remove(e.getPlayer());
-                        hMaps.getPlayerSchematic().remove(e.getPlayer());
+                        currentSession.setAssignedWorld(null);
+                        currentSession.setSchematicName(null);
+                        bridgingPractice.getActiveSessions().remove(e.getPlayer());
                         bridgingPractice.getWorldArray().remove(worldName);
                     }
                 }
                 e.getPlayer().getInventory().clear();
             } else if(e.getPlayer().getItemInHand().getItemMeta().equals(guiManager.getRefillMeta())) {
                 e.getPlayer().getInventory().clear();
-                guiManager.giveInventoryItems(e.getPlayer(), hMaps.getSelectedWoolColor().get(e.getPlayer()), WoolColor.woolToDye(hMaps.getSelectedWoolColor().get(e.getPlayer())));
+                guiManager.giveInventoryItems(e.getPlayer(), currentSession.getWoolColor());
             }
         }
-        if(hMaps.getSpectatingPlayer().containsKey(e.getPlayer())) {
-            if(hMaps.getSpectatingPlayer().get(e.getPlayer()).getWorld() == e.getPlayer().getWorld()) {
+        if(currentSession.isSpectatingPlayer()) {
+            if(currentSession.getSpectating().getWorld() == e.getPlayer().getWorld()) {
                 if(e.getPlayer().getItemInHand().getItemMeta() == null) return;
                 if(e.getPlayer().getItemInHand().getItemMeta().equals(guiManager.getSpectatorLeave())) {
-                    hMaps.getPlayerScoreboard().get(e.getPlayer()).delete();
-                    hMaps.getPlayerScoreboard().remove(e.getPlayer());
-                    hMaps.getSpectatingPlayer().remove(e.getPlayer());
+                    currentSession.getScoreboard().delete();
+                    currentSession.setScoreboard(null);
+                    currentSession.setSpectating(null);
                     e.getPlayer().teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
                     e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "Teleported!");
                     e.getPlayer().getInventory().clear();

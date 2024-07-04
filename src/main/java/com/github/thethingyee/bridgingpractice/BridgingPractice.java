@@ -2,8 +2,8 @@ package com.github.thethingyee.bridgingpractice;
 
 import com.github.thethingyee.bridgingpractice.listeners.*;
 import com.github.thethingyee.bridgingpractice.utils.ConfigExists;
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
 import com.github.thethingyee.bridgingpractice.utils.Offsets;
+import com.github.thethingyee.bridgingpractice.utils.Session;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @SuppressWarnings("ALL")
 public final class BridgingPractice extends JavaPlugin implements Listener {
@@ -31,8 +32,9 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
     private ScoreboardManager scoreboardManager;
 
     private PlayerSpeed playerSpeed;
-    private HMaps hMaps;
     private ConfigExists configExists;
+
+    private HashMap<Player, Session> activeSessions = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -44,7 +46,6 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
         new Offsets(this);
 
         playerSpeed = new PlayerSpeed(this);
-        hMaps = new HMaps();
         configExists = new ConfigExists(this);
 
         if (getWorldEditPlugin() == null) {
@@ -110,10 +111,6 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
         return playerSpeed;
     }
 
-    public HMaps gethMaps() {
-        return hMaps;
-    }
-
     public GUIManager getGuiManager() {
         return guiManager;
     }
@@ -128,6 +125,10 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
 
     public ConfigExists getConfigExists() {
         return configExists;
+    }
+
+    public HashMap<Player, Session> getActiveSessions() {
+        return activeSessions;
     }
 
     private WorldEditPlugin getWorldEditPlugin() {

@@ -1,8 +1,6 @@
 package com.github.thethingyee.bridgingpractice;
 
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import com.github.thethingyee.bridgingpractice.utils.Session;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,7 +14,10 @@ public class PlayerSpeed {
     }
 
     public void startPlayerSpeed(Player player) {
-        HMaps hMaps = bridgingPractice.gethMaps();
+
+        if(!bridgingPractice.getActiveSessions().containsKey(player)) return;
+        Session currentSession = bridgingPractice.getActiveSessions().get(player);
+
         BukkitRunnable runnable = new BukkitRunnable() {
             Location oldLoc = player.getLocation();
             @Override
@@ -25,19 +26,19 @@ public class PlayerSpeed {
                 Location newLoc = player.getLocation();
                 newLoc.setY(0.0);
                 double equation = newLoc.distance(oldLoc) * 2;
-                hMaps.getPlayerSpeed().put(player, equation);
+                currentSession.setSpeed(equation);
                 oldLoc = newLoc;
             }
         };
-        if(hMaps.getPlayerRunnable().containsKey(player)) return;
-        hMaps.getPlayerRunnable().put(player, runnable);
-        hMaps.getPlayerRunnable().get(player).runTaskTimer(bridgingPractice, 0, 10);
+        if(currentSession.getRunnable() != null) return;
+        currentSession.setRunnable(runnable);
+        currentSession.getRunnable().runTaskTimer(bridgingPractice, 0, 10);
     }
 
     public void stopPlayerSpeed(Player player) {
-        HMaps hMaps = bridgingPractice.gethMaps();
-        if(!hMaps.getPlayerRunnable().containsKey(player)) return;
-        hMaps.getPlayerRunnable().get(player).cancel();
-        hMaps.getPlayerRunnable().remove(player);
+
+        if(bridgingPractice.getActiveSessions().get(player).getRunnable() == null) return;
+        bridgingPractice.getActiveSessions().get(player).getRunnable().cancel();
+        bridgingPractice.getActiveSessions().get(player).setRunnable(null);
     }
 }

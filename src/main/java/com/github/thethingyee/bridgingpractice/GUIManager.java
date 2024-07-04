@@ -1,14 +1,12 @@
 package com.github.thethingyee.bridgingpractice;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Dye;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,19 +26,19 @@ public class GUIManager {
         this.bridgingPractice = bridgingPractice;
     }
 
-    public void giveInventoryItems(Player player, int color, int changeitemcolor) {
+    public void giveInventoryItems(Player player, DyeColor color) {
 
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1.0F, 1.0F);
+        player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
 
         ArrayList<ItemStack> stacks = new ArrayList<>(Arrays.asList(player.getInventory().getContents()));
         if(!stacks.isEmpty()) {
             player.getInventory().clear();
         }
 
-        ItemStack wool = new ItemStack(Material.WOOL, 64, (byte)color);
+        ItemStack wool = new ItemStack(Material.WOOL, 64, color.getWoolData());
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack refill = new ItemStack(Material.CHEST);
-        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, (byte)changeitemcolor);
+        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, color.getData()); // deprecated my ass
         ItemStack restart = new ItemStack(Material.STICK);
         ItemStack leave = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -91,8 +89,8 @@ public class GUIManager {
 
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
-        for(int i = 0; i <= 15; i++) {
-            stacks.add(new ItemStack(Material.WOOL, 1, (byte)i));
+        for(DyeColor color : DyeColor.values()) {
+            stacks.add(new ItemStack(Material.WOOL, 1, color.getWoolData()));
         }
 
         inv.setContents(stacks.toArray(new ItemStack[0]));

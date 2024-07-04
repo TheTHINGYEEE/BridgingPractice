@@ -1,7 +1,6 @@
 package com.github.thethingyee.bridgingpractice.listeners;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
-import com.github.thethingyee.bridgingpractice.utils.HMaps;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,11 +16,9 @@ public class BlockBreak implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-
-        HMaps hMaps = bridgingPractice.gethMaps();
-
-        if(hMaps.getSpectatingPlayer().containsKey(e.getPlayer())) {
-            if(hMaps.getSpectatingPlayer().get(e.getPlayer()).getWorld().getName().equalsIgnoreCase(e.getPlayer().getWorld().getName())) {
+        if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
+        if(bridgingPractice.getActiveSessions().get(e.getPlayer()).getSpectating() != null) {
+            if(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld().getName().equalsIgnoreCase(e.getPlayer().getWorld().getName())) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't place blocks here!");
             }
