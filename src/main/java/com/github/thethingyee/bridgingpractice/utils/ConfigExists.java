@@ -1,7 +1,6 @@
 package com.github.thethingyee.bridgingpractice.utils;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 
@@ -13,17 +12,16 @@ public class ConfigExists {
         this.bridgingPractice = bridgingPractice;
     }
 
-    public boolean schematicExists(String schematicName, Player player) {
+    public boolean schematicExists(String schematicName) {
         if(bridgingPractice.getConfig().get("offset." + schematicName) != null) {
             File file = new File(bridgingPractice.getDataFolder() + File.separator + "schematics" + File.separator + schematicName + ".schematic");
-            player.sendMessage(file.getAbsolutePath());
             return (file.exists());
         }
         return false;
     }
 
-    public File getSchematicFile(String schematicName, Player player) {
-        if(schematicExists(schematicName, player)) {
+    public File getSchematicFile(String schematicName) {
+        if(schematicExists(schematicName)) {
             return (new File(bridgingPractice.getDataFolder() + File.separator + "/schematics/" + schematicName + ".schematic"));
         }
         return null;

@@ -48,11 +48,11 @@ public class PracticeCommand extends Command {
 
             if(args.length == 1) {
                 String schematicName = args[0];
-                boolean schematicExist = bridgingPractice.getConfigExists().schematicExists(schematicName, player);
+                boolean schematicExist = bridgingPractice.getConfigExists().schematicExists(schematicName);
                 String msg = schematicExist ? ChatColor.GREEN + "Schematic file exists!" : ChatColor.RED + "Schematic file doesn't exist.";
 
                 if(schematicExist) customSchematicFound = true;
-                file = bridgingPractice.getConfigExists().getSchematicFile(schematicName, player);
+                file = bridgingPractice.getConfigExists().getSchematicFile(schematicName);
                 player.sendMessage(bridgingPractice.prefix + msg);
             }
 
