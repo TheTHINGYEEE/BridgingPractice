@@ -26,4 +26,11 @@ public class ConfigExists {
         }
         return null;
     }
+
+    public String getDefaultSchematicName() {
+        if(bridgingPractice.getConfig().getString("defaults.schematic") != null) {
+            return bridgingPractice.getConfig().getString("defaults.schematic").replaceAll(".schematic", "");
+        }
+        return null;
+    }
 }

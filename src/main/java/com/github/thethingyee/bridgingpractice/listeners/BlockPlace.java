@@ -22,6 +22,7 @@ public class BlockPlace implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
+        if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
         if(e.getPlayer().getWorld().getName().equalsIgnoreCase(bridgingPractice.getConfig().getString("defaults.world"))) return;
 
         if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
@@ -33,7 +34,7 @@ public class BlockPlace implements Listener {
             }
         }
 
-        if(e.getPlayer().getWorld().getName().equalsIgnoreCase(e.getPlayer().getUniqueId().toString().replaceAll("-", ""))) {
+        if(e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
             if (e.getBlockPlaced().getType().equals(Material.WOOL)) {
                 if (currentSession.getBlockPlaced() != null) {
                     currentSession.getBlockPlaced().add(new Location(e.getPlayer().getWorld(), e.getBlockPlaced().getLocation().getBlockX(), e.getBlockPlaced().getLocation().getBlockY(), e.getBlockPlaced().getLocation().getBlockZ()));

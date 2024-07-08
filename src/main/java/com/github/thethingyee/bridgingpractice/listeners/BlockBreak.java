@@ -18,7 +18,7 @@ public class BlockBreak implements Listener {
     public void onBreak(BlockBreakEvent e) {
         if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
         if(bridgingPractice.getActiveSessions().get(e.getPlayer()).getSpectating() != null) {
-            if(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld().getName().equalsIgnoreCase(e.getPlayer().getWorld().getName())) {
+            if(e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't place blocks here!");
             }

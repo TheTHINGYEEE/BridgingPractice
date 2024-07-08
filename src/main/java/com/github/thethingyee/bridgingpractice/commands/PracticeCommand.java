@@ -41,25 +41,23 @@ public class PracticeCommand extends Command {
 
             player.sendMessage(bridgingPractice.prefix + ChatColor.YELLOW + "Creating world...");
 
-            WorldCreator wc = new WorldCreator(player.getUniqueId().toString().replaceAll("-", ""));
-            File file = null;
-
-            boolean customSchematicFound = false;
-
-            if(args.length == 1) {
-                String schematicName = args[0];
-                boolean schematicExist = bridgingPractice.getConfigExists().schematicExists(schematicName);
-                String msg = schematicExist ? ChatColor.GREEN + "Schematic file exists!" : ChatColor.RED + "Schematic file doesn't exist.";
-
-                if(schematicExist) customSchematicFound = true;
-                file = bridgingPractice.getConfigExists().getSchematicFile(schematicName);
-                player.sendMessage(bridgingPractice.prefix + msg);
-            }
-
-            if(file == null) return;
-
+            WorldCreator wc = new WorldCreator(player.getUniqueId().toString().replaceAll("-", "") + "-bp");
             wc.type(WorldType.FLAT);
             wc.generatorSettings("2;0;1;");
+
+            File file = null;
+
+            String schematicName = (args.length == 1) ? args[0] : bridgingPractice.getConfigExists().getDefaultSchematicName();
+            boolean schematicExist = bridgingPractice.getConfigExists().schematicExists(schematicName);
+            String msg = schematicExist ? ChatColor.GREEN + "Schematic file exists!" : ChatColor.RED + "Schematic file doesn't exist.";
+
+            if(!schematicExist) {
+                player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "Schematic doesn't exist! Please contact server administrator.");
+                return;
+            }
+
+            file = bridgingPractice.getConfigExists().getSchematicFile(schematicName);
+            player.sendMessage(bridgingPractice.prefix + msg);
 
             World createdWorld = wc.createWorld();
             bridgingPractice.getActiveSessions().put(player, new Session());
@@ -68,15 +66,12 @@ public class PracticeCommand extends Command {
             bridgingPractice.getScoreboardManager().showPlayingScoreboard(player);
 
             currentSession.setAssignedWorld(createdWorld);
-//                            hMaps.getAssignedWorld().put(player, createdWorld);
+
             createdWorld.setDifficulty(Difficulty.PEACEFUL);
 
-            bridgingPractice.getWorldArray().add(player.getUniqueId().toString().replaceAll("-", ""));
+            bridgingPractice.getWorldArray().add(currentSession.getAssignedWorld().getName());
 
-            String schematicName = (args.length == 1) ? args[0] : file.getName().replaceAll(".schematic", "");
-
-            File prev = file;
-            file = customSchematicFound ? prev : new File(bridgingPractice.getDataFolder() + File.separator + "/schematics/" + bridgingPractice.getConfig().getString("defaults.schematic"));
+            file = bridgingPractice.getConfigExists().getSchematicFile(schematicName);
             Location loc = new Location(createdWorld, 0.0, 128.0, 0.0);
 
             try {

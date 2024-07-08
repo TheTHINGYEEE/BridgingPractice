@@ -23,6 +23,7 @@ public class ScoreboardManager {
             @Override
             public void run() {
                 for(Player player : bridgingPractice.getActiveSessions().keySet()) {
+                    player.sendMessage("test");
                     Session session = bridgingPractice.getActiveSessions().get(player);
                     if(session.getSpectating() != null || session.getScoreboard() == null) {
                         continue;

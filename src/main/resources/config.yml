@@ -1,8 +1,8 @@
 defaults:
   # Plugin defaults
   world: "world"
-  # Name of schematic file along with the extension, make sure it is on BridgingPractice/schematics
-  schematic: "islandFinal2.schematic"
+  # Name of the default schematic file along with the extension, make sure it is on BridgingPractice/schematics
+  schematic: "default.schematic"
   # Y coordinate of the kill zone / restart.
   kill-zone: 110
 offset:

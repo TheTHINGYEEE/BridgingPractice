@@ -34,39 +34,8 @@ public class LeaveCommand extends Command {
 
     @Override
     public void perform(Player player, String[] args) {
-
-        if(bridgingPractice.getActiveSessions().get(player).getAssignedWorld() != null) {
-            player.teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
-            String worldName = player.getUniqueId().toString().replaceAll("-", "");
-            World world = Bukkit.getWorld(worldName);
-            if(world != null) {
-                if(!world.getPlayers().isEmpty()) {
-                    for(Player pl : world.getPlayers()) {
-                        if(bridgingPractice.getActiveSessions().get(pl).getSpectating() == player) {
-                            bridgingPractice.getActiveSessions().get(pl).setSpectating(null);
-                        }
-                        pl.teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
-                        player.showPlayer(pl);
-                    }
-                }
-                Bukkit.unloadWorld(world, false);
-                try {
-                    FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.separator + "/" + worldName));
-                } catch (IOException ex) {
-                    Bukkit.getConsoleSender().sendMessage("Exception found! " + ex.getMessage());
-
-                }
-                Bukkit.getConsoleSender().sendMessage("Deleted world '" + worldName + "'");
-//                                    hMaps.getAssignedWorld().remove(player);
-                bridgingPractice.getActiveSessions().get(player).setAssignedWorld(null);
-                bridgingPractice.getWorldArray().remove(worldName);
-                bridgingPractice.getActiveSessions().get(player).getScoreboard().delete();
-                bridgingPractice.getActiveSessions().get(player).setScoreboard(null);
-                bridgingPractice.getActiveSessions().remove(player);
-
-                player.sendMessage(bridgingPractice.prefix + ChatColor.YELLOW + "Successfully left bridging...");
-            }
-        }
-        player.getInventory().clear();
+        if(!bridgingPractice.getActiveSessions().containsKey(player)) return;
+        player.sendMessage(ChatColor.RED + "Leaving current session...");
+        bridgingPractice.getActiveSessions().get(player).leaveSession(bridgingPractice, player);
     }
 }

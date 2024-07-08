@@ -25,10 +25,10 @@ public class PlayerMove implements Listener {
         if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
         Session currentSession = bridgingPractice.getActiveSessions().get(e.getPlayer());
 
-        if(e.getPlayer().getWorld().getName().equalsIgnoreCase(e.getPlayer().getUniqueId().toString().replaceAll("-", ""))) {
+        if(e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
             double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(e.getPlayer()).getSchematicName());
             if (e.getPlayer().getLocation().getBlockY() <= bridgingPractice.getConfig().getInt("defaults.kill-zone")) {
-                e.getPlayer().teleport(new Location(Bukkit.getWorld(e.getPlayer().getUniqueId().toString().replaceAll("-", "")), 0.0, 128.0, 0.0).add(offset[0], offset[1] + 1, offset[2]));
+                e.getPlayer().teleport(new Location(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld(), 0.0, 128.0, 0.0).add(offset[0], offset[1] + 1, offset[2]));
                 if (currentSession.getBlockPlaced() != null) {
                     for (Location loc : currentSession.getBlockPlaced()) {
                         e.getPlayer().getWorld().getBlockAt(loc).setType(Material.AIR);

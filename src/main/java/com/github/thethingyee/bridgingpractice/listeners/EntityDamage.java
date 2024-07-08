@@ -22,37 +22,37 @@ public class EntityDamage implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
 
-        if(e.getEntity() instanceof Player) {
-            Player player = (Player) e.getEntity();
-            if(!bridgingPractice.getActiveSessions().containsKey(player)) return;
-            if (player.getWorld().getName().equalsIgnoreCase(player.getUniqueId().toString().replaceAll("-", ""))) {
-                if(e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
-                    double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(player).getSchematicName());
-                    player.teleport(new Location(Bukkit.getWorld(player.getUniqueId().toString().replaceAll("-", "")), 0.0, 128.0, 0.0)
-                            .add(offset[0], offset[1]+1, offset[2]));
-                    if(bridgingPractice.getActiveSessions().get(player).getBlockPlaced() != null) {
-                        for (Location loc : bridgingPractice.getActiveSessions().get(player).getBlockPlaced()) {
-                            player.getWorld().getBlockAt(loc).setType(Material.AIR);
-                        }
+        if(!(e.getEntity() instanceof Player)) return;
+        Player player = (Player) e.getEntity();
+        if(!bridgingPractice.getActiveSessions().containsKey(player)) return;
+        if (player.getWorld().equals(bridgingPractice.getActiveSessions().get(player).getAssignedWorld())) {
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
+                double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(player).getSchematicName());
+                player.teleport(new Location(bridgingPractice.getActiveSessions().get(player).getAssignedWorld(), 0.0, 128.0, 0.0)
+                        .add(offset[0], offset[1]+1, offset[2]));
+                if(bridgingPractice.getActiveSessions().get(player).getBlockPlaced() != null) {
+                    for (Location loc : bridgingPractice.getActiveSessions().get(player).getBlockPlaced()) {
+                        player.getWorld().getBlockAt(loc).setType(Material.AIR);
                     }
-                    player.getInventory().clear();
-                    bridgingPractice.getGuiManager().giveInventoryItems(player, bridgingPractice.getActiveSessions().get(player).getWoolColor());
+                }
+                player.getInventory().clear();
+                bridgingPractice.getGuiManager().giveInventoryItems(player, bridgingPractice.getActiveSessions().get(player).getWoolColor());
 
-                    bridgingPractice.getActiveSessions().get(player).setBlockPlaced(null);
-                    bridgingPractice.getActiveSessions().get(player).setBlocksPlaced(0);
-                    player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "Oops! You fell down! Restarting..");
-                }
-                e.setCancelled(true);
+                bridgingPractice.getActiveSessions().get(player).setBlockPlaced(null);
+                bridgingPractice.getActiveSessions().get(player).setBlocksPlaced(0);
+                player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "Oops! You fell down! Restarting..");
             }
-            if(!player.getWorld().equals(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")))) {
-                if(e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
-                    double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(bridgingPractice.getActiveSessions().get(player).getSpectating()).getSchematicName());
-                    player.teleport(new Location(player.getWorld(), 0.0, 128.0, 0.0)
-                            .add(offset[0], offset[1]+1, offset[2]));
-                    player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You fell down! Putting back to spawn.");
-                }
-                e.setCancelled(true);
-            }
+            e.setCancelled(true);
         }
+        if(!player.getWorld().equals(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")))) {
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
+                double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(bridgingPractice.getActiveSessions().get(player).getSpectating()).getSchematicName());
+                player.teleport(new Location(player.getWorld(), 0.0, 128.0, 0.0)
+                        .add(offset[0], offset[1]+1, offset[2]));
+                player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You fell down! Putting back to spawn.");
+            }
+            e.setCancelled(true);
+        }
+
     }
 }

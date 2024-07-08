@@ -17,7 +17,8 @@ public class ChangeWorld implements Listener {
     @EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent e) {
         PlayerSpeed playerSpeed = bridgingPractice.getPlayerSpeed();
-        if(e.getFrom().getName().equalsIgnoreCase(e.getPlayer().getUniqueId().toString().replaceAll("-", ""))) {
+        if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
+        if(e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
             playerSpeed.stopPlayerSpeed(e.getPlayer());
             bridgingPractice.getActiveSessions().get(e.getPlayer()).setSchematicName(null);
             bridgingPractice.getActiveSessions().get(e.getPlayer()).getScoreboard().delete();

@@ -34,37 +34,7 @@ public class PlayerLeave implements Listener {
         Session currentSession = bridgingPractice.getActiveSessions().get(e.getPlayer());
 
         if(currentSession.getAssignedWorld() != null) {
-            p.teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
-            String worldName = p.getUniqueId().toString().replaceAll("-", "");
-            World world = Bukkit.getWorld(worldName);
-            if(world != null) {
-                if(!world.getPlayers().isEmpty()) {
-                    for(Player player : world.getPlayers()) {
-                        if(bridgingPractice.getActiveSessions().get(player).getSpectating() == e.getPlayer()) {
-                            bridgingPractice.getActiveSessions().get(player).getScoreboard().delete();
-                            bridgingPractice.getActiveSessions().get(player).setScoreboard(null);
-                            bridgingPractice.getActiveSessions().get(player).setSpectating(null);
-                            player.setAllowFlight(false);
-                            player.setFlying(false);
-                            player.getInventory().clear();
-                        }
-                        player.teleport(Bukkit.getWorld(bridgingPractice.getConfig().getString("defaults.world")).getSpawnLocation());
-                        p.showPlayer(player);
-                    }
-                }
-                Bukkit.unloadWorld(world, false);
-                try {
-                    FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.separator + "/" + worldName));
-                } catch (IOException ex) {
-                    Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + ChatColor.RED + ex.getMessage());
-                }
-                Bukkit.getConsoleSender().sendMessage(bridgingPractice.prefix + "Deleted world '" + worldName + "'");
-                bridgingPractice.getPlayerSpeed().stopPlayerSpeed(e.getPlayer());
-                currentSession.setWoolColor(null);
-                currentSession.setAssignedWorld(null);
-                bridgingPractice.getWorldArray().remove(worldName);
-                currentSession.setSchematicName(null);
-            }
+            currentSession.leaveSession(bridgingPractice, p);
         }
         p.getInventory().clear();
     }

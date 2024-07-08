@@ -41,7 +41,7 @@ public class CommandManager implements CommandExecutor {
                 for(com.github.thethingyee.bridgingpractice.commands.manager.Command registeredCommand : registeredSubCommands) {
                     if(registeredCommand.getName().equalsIgnoreCase(args[0])) {
                         if(registeredCommand.performOnlyAtSession()) {
-                            if (player.getWorld().getName().equalsIgnoreCase(player.getUniqueId().toString().replaceAll("-", "")))
+                            if (player.getWorld().equals(bridgingPractice.getActiveSessions().get(player).getAssignedWorld()))
                                 registeredCommand.perform(player, Arrays.copyOfRange(args, 1, args.length));
                             continue;
                         }
