@@ -17,18 +17,41 @@ public class ScoreboardManager {
 
     public void init() {
 
-
-
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 for(Player player : bridgingPractice.getActiveSessions().keySet()) {
-                    player.sendMessage("test");
-                    Session session = bridgingPractice.getActiveSessions().get(player);
-                    if(session.getSpectating() != null || session.getScoreboard() == null) {
+                    // spectating player scoreboard
+
+                    if(bridgingPractice.getActiveSessions().get(player).getScoreboard() == null) bridgingPractice.getActiveSessions().get(player).setScoreboard(new FastBoard(player));
+
+
+                    if(bridgingPractice.getActiveSessions().get(player).isSpectatingPlayer()) {
+                        Player target = bridgingPractice.getActiveSessions().get(player).getSpectating();
+                        Session session = bridgingPractice.getActiveSessions().get(target);
+                        FastBoard fastBoard = bridgingPractice.getActiveSessions().get(player).getScoreboard();
+                        fastBoard.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bridging");
+
+                        fastBoard.updateLines(
+                                "",
+                                "Name: " + ChatColor.GREEN + target.getName(),
+                                "",
+                                "Map: " + ChatColor.GREEN + session.getSchematicName(),
+                                "",
+                                "Blocks Placed: " + ChatColor.GREEN + session.getBlocksPlaced(),
+                                "Speed: " + ChatColor.GREEN + String.format("%.2f", session.getSpeed()) + " m/s",
+                                "",
+                                "Online Players: " + ChatColor.GREEN + Bukkit.getOnlinePlayers().size(),
+                                "",
+                                ChatColor.RED + bridgingPractice.getConfig().getString("scoreboard.server-ip")
+                        );
                         continue;
                     }
+
+                    // singleplayer session scoreboard
+                    Session session = bridgingPractice.getActiveSessions().get(player);
                     FastBoard fastBoard = session.getScoreboard();
+
                     fastBoard.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bridging");
 
                     fastBoard.updateLines(
@@ -49,42 +72,14 @@ public class ScoreboardManager {
         };
         runnable.runTaskTimer(bridgingPractice, 0, 5);
 
-        BukkitRunnable runnable2 = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for(Player p : bridgingPractice.getActiveSessions().keySet()) {
-                    if(bridgingPractice.getActiveSessions().get(p).isSpectatingPlayer()) {
-                        Player target = bridgingPractice.getActiveSessions().get(p).getSpectating();
-                        Session session = bridgingPractice.getActiveSessions().get(target);
-                        FastBoard fastBoard = bridgingPractice.getActiveSessions().get(p).getScoreboard();
-                        fastBoard.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "Bridging");
-
-                        fastBoard.updateLines(
-                                "",
-                                "Name: " + ChatColor.GREEN + target.getName(),
-                                "",
-                                "Map: " + ChatColor.GREEN + session.getSchematicName(),
-                                "",
-                                "Blocks Placed: " + ChatColor.GREEN + session.getBlocksPlaced(),
-                                "Speed: " + ChatColor.GREEN + String.format("%.2f", session.getSpeed()) + " m/s",
-                                "",
-                                "Online Players: " + ChatColor.GREEN + Bukkit.getOnlinePlayers().size(),
-                                "",
-                                ChatColor.RED + bridgingPractice.getConfig().getString("scoreboard.server-ip")
-                        );
-                    }
-                }
-            }
-        };
-        runnable2.runTaskTimer(bridgingPractice, 0, 5);
-    }
-
-    public void showPlayingScoreboard(Player player) {
-        bridgingPractice.getActiveSessions().get(player).setScoreboard(new FastBoard(player));
-    }
-
-    public void showSpectateScoreboard(Player request, Player target) {
-        bridgingPractice.getActiveSessions().get(request).setScoreboard(new FastBoard(request));
-        bridgingPractice.getActiveSessions().get(request).setSpectating(target);
+//        BukkitRunnable runnable2 = new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                for(Player p : bridgingPractice.getActiveSessions().keySet()) {
+//
+//                }
+//            }
+//        };
+//        runnable2.runTaskTimer(bridgingPractice, 0, 5);
     }
 }

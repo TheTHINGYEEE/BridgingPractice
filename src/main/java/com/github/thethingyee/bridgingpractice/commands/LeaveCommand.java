@@ -2,14 +2,8 @@ package com.github.thethingyee.bridgingpractice.commands;
 
 import com.github.thethingyee.bridgingpractice.BridgingPractice;
 import com.github.thethingyee.bridgingpractice.commands.manager.Command;
-import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.IOException;
 
 public class LeaveCommand extends Command {
 
@@ -34,8 +28,12 @@ public class LeaveCommand extends Command {
 
     @Override
     public void perform(Player player, String[] args) {
-        if(!bridgingPractice.getActiveSessions().containsKey(player)) return;
+        if (!bridgingPractice.getActiveSessions().containsKey(player)) return;
         player.sendMessage(ChatColor.RED + "Leaving current session...");
-        bridgingPractice.getActiveSessions().get(player).leaveSession(bridgingPractice, player);
+        if (!bridgingPractice.getActiveSessions().get(player).leaveSession(bridgingPractice, player)) {
+            player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "Can't leave session.");
+            return;
+        }
+        player.sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "Successfully left session...");
     }
 }

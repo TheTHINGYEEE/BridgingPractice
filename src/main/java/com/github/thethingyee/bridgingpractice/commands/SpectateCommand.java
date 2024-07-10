@@ -35,32 +35,39 @@ public class SpectateCommand extends Command {
             player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "Please specify a player.");
             return;
         }
-        if(Bukkit.getPlayer(args[0]) != null) {
-            Player playerTarget = Bukkit.getPlayer(args[0]);
-            if(bridgingPractice.getActiveSessions().containsKey(player)) {
-                player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You cannot spectate while you're playing.");
-                return;
-            }
-            if (playerTarget != player) {
-                if (bridgingPractice.getActiveSessions().containsKey(playerTarget)) {
-                    player.setGameMode(GameMode.SURVIVAL);
-                    player.setAllowFlight(true);
-                    player.setFlying(true);
-                    playerTarget.hidePlayer(player);
-                    Location loc = new Location(bridgingPractice.getActiveSessions().get(playerTarget).getAssignedWorld(), 0.0, 128.0, 0.0);
-                    double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(playerTarget).getSchematicName());
-                    player.teleport(loc.add(offset[0], offset[1]+1, offset[2]));
-                    bridgingPractice.getGuiManager().giveSpectatorItems(player);
-                    bridgingPractice.getScoreboardManager().showSpectateScoreboard(player, playerTarget);
-                    player.sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "Now spectating player " + playerTarget.getName() + "!");
-                } else {
-                    player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "That player is not on any practice worlds.");
-                }
-            } else {
-                player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't spectate yourself.");
-            }
-        } else {
+
+        if(Bukkit.getPlayer(args[0]) == null) {
             player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "That player is not online or doesn't exist.");
+            return;
         }
+
+        Player playerTarget = Bukkit.getPlayer(args[0]);
+
+        if(bridgingPractice.getActiveSessions().containsKey(player)) {
+            player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You cannot spectate while you're playing.");
+            return;
+        }
+
+        if (playerTarget == player) {
+            player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't spectate yourself.");
+            return;
+        }
+
+        if (!bridgingPractice.getActiveSessions().containsKey(playerTarget)) {
+            player.sendMessage(bridgingPractice.prefix + ChatColor.RED + "That player is not on any practice worlds.");
+            return;
+        }
+
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+        playerTarget.hidePlayer(player);
+        Location loc = new Location(bridgingPractice.getActiveSessions().get(playerTarget).getAssignedWorld(), 0.0, 128.0, 0.0);
+        double[] offset = Offsets.getOffsets(bridgingPractice.getActiveSessions().get(playerTarget).getSchematicName());
+        player.teleport(loc.add(offset[0], offset[1]+1, offset[2]));
+        bridgingPractice.getGuiManager().giveSpectatorItems(player);
+        bridgingPractice.getActiveSessions().get(player).setSpectating(playerTarget);
+        player.sendMessage(bridgingPractice.prefix + ChatColor.GREEN + "Now spectating player " + playerTarget.getName() + "!");
+
     }
 }

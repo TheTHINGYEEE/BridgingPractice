@@ -5,7 +5,6 @@ import fr.mrmicky.fastboard.FastBoard;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +17,6 @@ public class Session {
     private ArrayList<Location> blockPlaced; // the block that was recently placed and its location
     private DyeColor woolColor;
     private double speed;
-    private BukkitRunnable runnable;
     private FastBoard scoreboard;
     private String schematicName;
     private Player spectating;
@@ -41,10 +39,6 @@ public class Session {
 
     public double getSpeed() {
         return speed;
-    }
-
-    public BukkitRunnable getRunnable() {
-        return runnable;
     }
 
     public FastBoard getScoreboard() {
@@ -79,10 +73,6 @@ public class Session {
         this.speed = speed;
     }
 
-    public void setRunnable(BukkitRunnable runnable) {
-        this.runnable = runnable;
-    }
-
     public void setScoreboard(FastBoard scoreboard) {
         this.scoreboard = scoreboard;
     }
@@ -107,8 +97,6 @@ public class Session {
             if(!world.getPlayers().isEmpty()) {
                 for(Player p : world.getPlayers()) {
                     if(bridgingPractice.getActiveSessions().get(p).getSpectating() == player) {
-                        this.getScoreboard().delete();
-                        this.setScoreboard(null);
                         this.setSpectating(null);
                         p.setAllowFlight(false);
                         p.setFlying(false);
@@ -118,6 +106,8 @@ public class Session {
                     player.showPlayer(player);
                 }
             }
+            this.getScoreboard().delete();
+            this.setScoreboard(null);
             Bukkit.unloadWorld(world, false);
             try {
                 FileUtils.deleteDirectory(new File(Bukkit.getWorldContainer() + File.separator + "/" + worldName));
@@ -133,7 +123,6 @@ public class Session {
             this.blockPlaced = null;
             this.blocksPlaced = 0;
             this.woolColor = null;
-            this.runnable = null;
             this.speed = 0.0d;
             return true;
         }

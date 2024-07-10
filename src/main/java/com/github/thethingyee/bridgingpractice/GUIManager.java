@@ -31,7 +31,7 @@ public class GUIManager {
         ItemStack wool = new ItemStack(Material.WOOL, 64, color.getData()); // idc deprecate my ass
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack refill = new ItemStack(Material.CHEST);
-        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, color.getData());
+        ItemStack changeCol = new ItemStack(Material.INK_SACK, 1, color.getDyeData());
         ItemStack restart = new ItemStack(Material.STICK);
         ItemStack leave = new ItemStack(Material.REDSTONE_BLOCK);
 

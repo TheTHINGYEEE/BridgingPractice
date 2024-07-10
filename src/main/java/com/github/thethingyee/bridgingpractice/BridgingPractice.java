@@ -32,7 +32,6 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
     private GUIManager guiManager;
     private ScoreboardManager scoreboardManager;
 
-    private PlayerSpeed playerSpeed;
     private ConfigExists configExists;
 
     private HashMap<Player, Session> activeSessions = new HashMap<>();
@@ -43,18 +42,16 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
 
         guiManager = new GUIManager();
         scoreboardManager = new ScoreboardManager(this);
+        configExists = new ConfigExists(this);
 
         new Offsets(this);
 
-        playerSpeed = new PlayerSpeed(this);
-        configExists = new ConfigExists(this);
-
         if (getWorldEditPlugin() == null) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "WorldEdit not found. Disabling..");
-
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
         this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);
         this.getServer().getPluginManager().registerEvents(new BlockPlace(this), this);
         this.getServer().getPluginManager().registerEvents(new ChangeWorld(this), this);
@@ -67,6 +64,7 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
         this.getCommand("bridge").setExecutor(new CommandManager(this));
 
         saveDefaultConfig();
+
         if (Bukkit.getWorld(this.getConfig().getString("defaults.world")) == null) {
             Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "The default world doesn't exist. Disabling...");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -79,25 +77,24 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Plugin disabling. Kicking all players.");
+        Bukkit.getConsoleSender().sendMessage(prefix + ChatColor.RED + "Plugin disabling. Teleporting all players.");
         for(Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().clear();
             player.teleport(Bukkit.getWorld(this.getConfig().getString("defaults.world")).getSpawnLocation());
-            player.kickPlayer(prefix + ChatColor.RED + "Plugin disabled. Sorry for the inconvenience.");
         }
+        if(this.getWorldArray().isEmpty()) return;
         for (String s : getWorldArray()) {
-            if (!getWorldArray().isEmpty()) {
-                try {
-                    File f = new File(Bukkit.getWorldContainer() + File.separator + "/" + s);
-                    if(f.exists()) {
-                        Bukkit.unloadWorld(Bukkit.getWorld(s), false);
-                        FileUtils.deleteDirectory(f);
-                    }
-                    getWorldArray().remove(s);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                File f = new File(Bukkit.getWorldContainer() + File.separator + "/" + s);
+                if(f.exists()) {
+                    Bukkit.unloadWorld(Bukkit.getWorld(s), false);
+                    FileUtils.deleteDirectory(f);
                 }
+                getWorldArray().remove(s);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -106,10 +103,6 @@ public final class BridgingPractice extends JavaPlugin implements Listener {
         CuboidClipboard clipboard = MCEditSchematicFormat.getFormat(file).load(file);
         clipboard.rotate2D(rotation);
         clipboard.paste(session, new Vector(loc.getX(), loc.getY(), loc.getZ()), false);
-    }
-
-    public PlayerSpeed getPlayerSpeed() {
-        return playerSpeed;
     }
 
     public GUIManager getGuiManager() {

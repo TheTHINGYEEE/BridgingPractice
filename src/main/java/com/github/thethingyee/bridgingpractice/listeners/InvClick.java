@@ -21,19 +21,19 @@ public class InvClick implements Listener {
     public void onClick(InventoryClickEvent e) {
 
         if(e.getInventory() == null) return;
-        if(e.getCurrentItem().getItemMeta() != null) {
-            if (e.getInventory().getName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Select Color")) {
-                e.setCancelled(true);
-                if (e.getWhoClicked() instanceof Player) {
-                    Player player = (Player) e.getWhoClicked();
-                    MaterialData matData = e.getCurrentItem().getData();
-                    if(matData instanceof Wool) {
-                        bridgingPractice.getGuiManager().giveInventoryItems(player, ((Wool) matData).getColor());
-                        bridgingPractice.getActiveSessions().get(player).setWoolColor(((Wool) matData).getColor());
-                        player.closeInventory();
-                    }
-                }
-            }
-        }
+        if(e.getCurrentItem().getItemMeta() == null) return;
+        if (!e.getInventory().getName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Select Color")) return;
+
+        e.setCancelled(true);
+
+        if (!(e.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) e.getWhoClicked();
+        MaterialData matData = e.getCurrentItem().getData();
+
+        if(!(matData instanceof Wool)) return;
+
+        bridgingPractice.getGuiManager().giveInventoryItems(player, ((Wool) matData).getColor());
+        bridgingPractice.getActiveSessions().get(player).setWoolColor(((Wool) matData).getColor());
+        player.closeInventory();
     }
 }

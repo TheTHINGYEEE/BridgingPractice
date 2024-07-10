@@ -27,32 +27,34 @@ public class BlockPlace implements Listener {
 
         if(!bridgingPractice.getActiveSessions().containsKey(e.getPlayer())) return;
         Session currentSession = bridgingPractice.getActiveSessions().get(e.getPlayer());
-        if(currentSession.getSpectating() != null) {
-            if(currentSession.getSpectating().getWorld().getName().equalsIgnoreCase(e.getPlayer().getWorld().getName())) {
-                e.setCancelled(true);
-                e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't place blocks here!");
-            }
-        }
 
-        if(e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
-            if (e.getBlockPlaced().getType().equals(Material.WOOL)) {
-                if (currentSession.getBlockPlaced() != null) {
-                    currentSession.getBlockPlaced().add(new Location(e.getPlayer().getWorld(), e.getBlockPlaced().getLocation().getBlockX(), e.getBlockPlaced().getLocation().getBlockY(), e.getBlockPlaced().getLocation().getBlockZ()));
-                    int placedBlocks = currentSession.getBlocksPlaced();
-                    currentSession.setBlocksPlaced(placedBlocks + 1);
-                } else {
-                    currentSession.setBlockPlaced(new ArrayList<>());
-                    currentSession.setBlocksPlaced(1);
-                    currentSession.getBlockPlaced().add(new Location(e.getPlayer().getWorld(), e.getBlockPlaced().getLocation().getBlockX(), e.getBlockPlaced().getLocation().getBlockY(), e.getBlockPlaced().getLocation().getBlockZ()));
-                    bridgingPractice.getPlayerSpeed().startPlayerSpeed(e.getPlayer());
-                }
-            } else {
-                e.setCancelled(true);
-                e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can only place WOOL here.");
-            }
-        } else {
+        // if player spectating player
+        if(currentSession.getSpectating() != null && currentSession.getSpectating().getWorld().getName().equalsIgnoreCase(e.getPlayer().getWorld().getName())) {
             e.setCancelled(true);
             e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't place blocks here!");
+            return;
         }
+
+        if(!e.getPlayer().getWorld().equals(bridgingPractice.getActiveSessions().get(e.getPlayer()).getAssignedWorld())) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can't place blocks here!");
+            return;
+        }
+
+        if (!e.getBlockPlaced().getType().equals(Material.WOOL)) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(bridgingPractice.prefix + ChatColor.RED + "You can only place WOOL here.");
+            return;
+        }
+        if (currentSession.getBlockPlaced() == null) {
+            currentSession.setBlockPlaced(new ArrayList<>());
+            currentSession.setBlocksPlaced(1);
+            currentSession.getBlockPlaced().add(new Location(e.getPlayer().getWorld(), e.getBlockPlaced().getLocation().getBlockX(), e.getBlockPlaced().getLocation().getBlockY(), e.getBlockPlaced().getLocation().getBlockZ()));
+            return;
+        }
+
+        currentSession.getBlockPlaced().add(new Location(e.getPlayer().getWorld(), e.getBlockPlaced().getLocation().getBlockX(), e.getBlockPlaced().getLocation().getBlockY(), e.getBlockPlaced().getLocation().getBlockZ()));
+        int placedBlocks = currentSession.getBlocksPlaced();
+        currentSession.setBlocksPlaced(placedBlocks + 1);
     }
 }
