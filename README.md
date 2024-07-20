@@ -35,5 +35,10 @@ Want to make BridgingPractice even better? Awesome! Here's how you can help:
 2. **Suggest Features:** Have an idea for a cool new feature? Tell us about it in the Issues page.
 3. **Code Contributions:** Experienced Java developer? Fork the repository, make your changes, and submit a pull request.
 
+## TODO
+Make the plugin more usable with other plugins.
+Make a specfic API for easy implementation of other addons and such.
+Make a ModeManager for easy implemnetation of other gamemodes.
+
 ## License
 This project is licensed under the GPL-3.0 License - see the [LICENSE]("https://github.com/TheTHINGYEEE/BridgingPractice/blob/main/LICENSE") file for details.
